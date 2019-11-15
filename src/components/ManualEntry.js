@@ -150,9 +150,7 @@ class ManualEntry extends React.Component {
               let colObj = this.buildColumnModelAndDefinitions([
                 { name: "ID", field: "id", type: "int" },
                 { name: "Name", field: "name", type: "text" },
-                { name: "City", field: "city", type: "text" },
-                { name: "State", field: "state", type: "text" },
-                { name: "Country", field: "country", type: "text" }
+                { name: "Location", field: "location", type: "text" }
               ]);
               return (
                 <ManualCrud
@@ -170,9 +168,9 @@ class ManualEntry extends React.Component {
             render={() => {
               let colObj = this.buildColumnModelAndDefinitions([
                 { name: "ID", field: "id", type: "int" },
-                { name: "Artist ID", field: "artistId", type: "int" },
-                { name: "Venue ID", field: "venueId", type: "int" },
-                { name: "Festival ID", field: "festivalId", type: "int" },
+                { name: "Artist ID", field: "artist", type: "int" },
+                { name: "Venue ID", field: "venue", type: "int" },
+                { name: "Festival ID", field: "festival", type: "int" },
                 { name: "Date", field: "date", type: "date" }
               ]);
               return (
@@ -191,7 +189,7 @@ class ManualEntry extends React.Component {
             render={() => {
               let colObj = this.buildColumnModelAndDefinitions([
                 { name: "ID", field: "id", type: "int" },
-                { name: "Venue ID", field: "venueId", type: "int" },
+                { name: "Venue ID", field: "venue", type: "int" },
                 { name: "Name", field: "name", type: "text" },
                 { name: "Start Date", field: "startDate", type: "date" },
                 { name: "End Date", field: "endDate", type: "date" }
@@ -212,7 +210,7 @@ class ManualEntry extends React.Component {
             render={() => {
               let colObj = this.buildColumnModelAndDefinitions([
                 { name: "ID", field: "id", type: "int" },
-                { name: "Concert ID", field: "concertId", type: "int" },
+                { name: "Concert ID", field: "concert", type: "int" },
                 { name: "Stars", field: "stars", type: "float" },
                 { name: "Comments", field: "comments", type: "text" }
               ]);

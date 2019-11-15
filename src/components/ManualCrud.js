@@ -9,7 +9,6 @@ import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker
 } from "@material-ui/pickers";
 import axios from "axios";
@@ -152,12 +151,16 @@ class ManualCrud extends React.Component {
             justify="flex-start"
             alignItems="center"
           >
-            {this.props.columnDefs.map(col => {
+            {this.props.columnDefs.map((col, index) => {
               // console.log(col);
               if (col.type === "date") {
                 return (
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
+                    key={col.field + index}
+                  >
                     <KeyboardDatePicker
+                      key={col.field + index}
                       disableToolbar
                       className={"datePicker"}
                       variant="inline"
@@ -176,11 +179,15 @@ class ManualCrud extends React.Component {
               } else {
                 return (
                   <TextField
-                    key={col.field}
+                    key={col.field + index}
                     className={"inputField"}
                     label={col.headerName}
                     margin="normal"
-                    value={this.state.columnModel[col.field]}
+                    value={
+                      this.state.columnModel[col.field]
+                        ? this.state.columnModel[col.field]
+                        : ""
+                    }
                     onChange={e => this.handleInputChange(e, col.field)}
                     type={col.type === "text" ? "text" : "number"}
                   />

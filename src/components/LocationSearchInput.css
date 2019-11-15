@@ -1,0 +1,18 @@
+.wrapper {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.location-search-input {
+    width: 90%;
+    margin-bottom: 10px !important;
+}
+
+.autocomplete-dropdown-container > div {
+    background-color: grey;
+}
+
+.suggestion {
+}
+
