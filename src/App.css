@@ -7,23 +7,31 @@
 }
 
 .headerContainer {
-  height: 150px;
+  height: 110px;
   background-color: rgba(0, 0, 0, 0.81);
+  -webkit-box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
+  -moz-box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
+  box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
 }
 
 .siteTitle {
   color: aqua;
+  font-family: 'Bungee Outline', cursive;
+  font-size: 65px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.headphones-logo {
+  margin-right: 20px;
 }
 
 .navButton {
   text-decoration: none;
   color: aqua;
-}
-
-h1 {
-  font-size: 46px;
-  margin-top: 0;
-  margin-bottom: 20px;
+  font-size: 20px;
 }
 
 .blue {

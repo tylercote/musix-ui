@@ -60,15 +60,25 @@ class ConcertEntry extends React.Component {
       venueLocation: this.state.venueLocation
     };
 
-    console.log("New Concert: ", newConcert);
     axios
       .post(`http://localhost:8000/api/v1/concerts/add_concert/`, newConcert)
       .then(response => {
-        this.props.fetchRows();
+        this.clearSelections();
       })
       .catch(e => {
         console.log(e);
       });
+  }
+
+  clearSelections() {
+    this.setState({
+      artist: "",
+      date: new Date(),
+      comments: "",
+      venueName: "",
+      venueLocation: ""
+    });
+    this.changeRating(0);
   }
 
   handleVenueSelect(venueName, venueLocation) {
@@ -89,8 +99,11 @@ class ConcertEntry extends React.Component {
           <Paper className={"paperContainer"}>
             <h2>I went to see</h2>
             <TextField
-              className={"inputField"}
-              label={"Artist"}
+              className={"inputWrapper"}
+              InputProps={{
+                className: "input"
+              }}
+              label={"Artist..."}
               margin="normal"
               value={this.state.artist}
               onChange={e => this.handleInputChange(e, "artist")}
@@ -102,6 +115,9 @@ class ConcertEntry extends React.Component {
               <KeyboardDatePicker
                 disableToolbar
                 className={"datePicker"}
+                InputProps={{
+                  className: "input"
+                }}
                 variant="inline"
                 format="MM/dd/yyyy"
                 margin="normal"
@@ -110,24 +126,34 @@ class ConcertEntry extends React.Component {
                 value={this.state.date}
                 onChange={e => this.handleInputChange(e, "date")}
                 KeyboardButtonProps={{
-                  "aria-label": "change date"
+                  "aria-label": "change date",
+                  color: "secondary"
                 }}
               />
             </MuiPickersUtilsProvider>
             <hr />
             <Rating
+              className={"ratingWrapper"}
               fractions={5}
               initialRating={this.state.rating}
               onClick={this.changeRating.bind(this)}
+              fullSymbol={"fa fa-star rating rating-full"}
+              emptySymbol={"fa fa-star-o rating rating-empty"}
             />
             <TextField
               id="outlined-multiline-static"
-              label="Comments"
+              label="Comments..."
               multiline
               rows="6"
               value={this.state.comments}
               onChange={e => this.handleInputChange(e, "comments")}
-              className={"commentsSection"}
+              className={"commentsSection inputWrapper"}
+              InputProps={{
+                className: "input",
+                classes: {
+                  notchedOutline: "inputLabel"
+                }
+              }}
               margin="normal"
               variant="outlined"
             />

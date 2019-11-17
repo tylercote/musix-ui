@@ -1,0 +1,20 @@
+.bottomButton {
+    float: right !important;
+    margin-top: 27px !important;
+    margin-right: 0px !important;
+    margin-left: 15px !important;
+}
+
+.bottomButton:hover {
+    background-color: aqua !important;
+}
+
+.paperContainer {
+    background-color: #626262 !important;
+    padding: 15px 15px 15px 15px !important;
+    margin: 30px 15px 15px 15px;
+    color: #eeeeee !important;
+    -webkit-box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
+    -moz-box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
+    box-shadow: 10px 10px 36px -6px rgba(0,0,0,0.75) !important;
+}

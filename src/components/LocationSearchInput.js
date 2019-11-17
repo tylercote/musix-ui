@@ -24,9 +24,12 @@ class LocationSearchInput extends React.Component {
           <div className={"wrapper"}>
             <TextField
               {...getInputProps({
-                placeholder: "Search Places ...",
                 className: "location-search-input"
               })}
+              label={"Venue..."}
+              InputProps={{
+                className: "input"
+              }}
             />
             <div className="autocomplete-dropdown-container">
               {loading && <div>Loading...</div>}
