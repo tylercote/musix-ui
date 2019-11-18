@@ -2,7 +2,7 @@ import React from "react";
 import AppBar from "@material-ui/core/AppBar/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link } from "react-router-dom";
 import ManualCrud from "./ManualCrud";
 import axios from "axios";
 

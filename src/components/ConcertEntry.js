@@ -13,11 +13,13 @@ import LocationSearchInput from "./LocationSearchInput";
 import Rating from "react-rating";
 import "./ConcertEntry.css";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 class ConcertEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      toGrid: false,
       artist: "",
       date: new Date(),
       rating: 0,
@@ -64,9 +66,12 @@ class ConcertEntry extends React.Component {
       .post(`http://localhost:8000/api/v1/concerts/add_concert/`, newConcert)
       .then(response => {
         this.clearSelections();
+        this.setState(() => ({ toGrid: true }));
+        setTimeout(this.props.openSnackbar("success", "Concert added."), 700);
       })
       .catch(e => {
         console.log(e);
+        this.props.openSnackbar("error", "Concert not added: " + e);
       });
   }
 
@@ -87,6 +92,10 @@ class ConcertEntry extends React.Component {
   }
 
   render() {
+    if (this.state.toGrid === true) {
+      return <Redirect exact to="/" />;
+    }
+
     return (
       <Grid
         container

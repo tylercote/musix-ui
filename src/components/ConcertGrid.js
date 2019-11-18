@@ -65,7 +65,8 @@ class ConcertGrid extends React.Component {
           filterable: true,
           editable: true,
           suppressMenu: true,
-          resizable: true
+          resizable: true,
+          enableCellChangeFlash: true
         },
         columnTypes: {
           text: {
@@ -116,11 +117,17 @@ class ConcertGrid extends React.Component {
       axios
         .delete(`http://localhost:8000/api/v1/concerts/${concert.id}/`)
         .then(response => {
-          console.log(response.data);
           this.fetchRows();
+          this.props.openSnackbar(
+            "success",
+            `Deleted ${concertsToDelete.length} concerts.`
+          );
         })
         .catch(e => {
-          console.log(e);
+          this.props.openSnackbar(
+            "error",
+            `Could not delete ${concertsToDelete.length} concerts.`
+          );
         });
     });
     this.setState({ selectedRows: [] });
@@ -130,18 +137,17 @@ class ConcertGrid extends React.Component {
     axios
       .get(`http://localhost:8000/api/v1/concerts/get_concerts/`)
       .then(response => {
-        console.log(response.data);
         this.setState({ rows: response.data });
       })
       .catch(e => {
-        console.log(e);
+        this.props.openSnackbar("error", `Could not fetch concerts: ${e}.`);
       });
   }
 
   putRow(event) {
+    console.log("Posting new value");
     let oldValue = event.oldValue;
-    let newValue = event.data;
-    console.log(event);
+    let newValue = event.data.artistName;
     console.log(oldValue, newValue);
     if (event.colDef.field === "artistName") {
       this.updateArtist(event);
@@ -162,6 +168,7 @@ class ConcertGrid extends React.Component {
 
   updateArtist(event) {
     // Make new artist, update with FK of new artist
+    console.log("Updating artist");
     let artist = { name: event.data.artistName };
     axios
       .post(`http://localhost:8000/api/v1/artists/`, artist)
@@ -174,12 +181,12 @@ class ConcertGrid extends React.Component {
             this.fetchRows();
           })
           .catch(e => {
-            console.log(e);
+            this.fetchRows();
           });
       })
       .catch(e => {
-        console.log(e);
-        event.node.setDataValue(event.colDef.field, event.oldValue);
+        this.fetchRows();
+        this.props.openSnackbar("error", `Could not update artist.`);
       });
   }
 
@@ -193,7 +200,8 @@ class ConcertGrid extends React.Component {
         this.fetchRows();
       })
       .catch(e => {
-        event.node.setDataValue(event.colDef.field, event.oldValue);
+        this.props.openSnackbar("error", `Could not update concert: ${e}`);
+        this.fetchRows();
       });
   }
 
@@ -214,12 +222,12 @@ class ConcertGrid extends React.Component {
             this.fetchRows();
           })
           .catch(e => {
-            console.log(e);
+            this.fetchRows();
           });
       })
       .catch(e => {
-        console.log(e);
-        event.node.setDataValue(event.colDef.field, event.oldValue);
+        this.fetchRows();
+        this.props.openSnackbar("error", `Could not update venue.`);
       });
   }
 
@@ -241,7 +249,8 @@ class ConcertGrid extends React.Component {
           this.fetchRows();
         })
         .catch(e => {
-          console.log(e);
+          this.props.openSnackbar("error", `Could not update review.`);
+          this.fetchRows();
         });
     } else {
       axios
@@ -250,7 +259,8 @@ class ConcertGrid extends React.Component {
           this.fetchRows();
         })
         .catch(e => {
-          console.log(e);
+          this.props.openSnackbar("error", `Could not update review.`);
+          this.fetchRows();
         });
     }
   }
@@ -263,7 +273,7 @@ class ConcertGrid extends React.Component {
             <div
               className="ag-theme-dark"
               style={{
-                height: "475px",
+                height: "525px",
                 width: "100%"
               }}
             >
@@ -278,20 +288,20 @@ class ConcertGrid extends React.Component {
               ></AgGridReact>
               <Button
                 variant="contained"
-                className={"bottomButton"}
+                className={"deleteButton"}
                 onClick={this.deleteSelectedConcerts}
-                disabled={this.state.selectedRows.length == 0}
+                disabled={this.state.selectedRows.length === 0}
               >
                 Delete Selected
               </Button>
               <Button
                 variant="contained"
-                className={"bottomButton"}
+                className={"clearButton"}
                 onClick={() => {
                   this.state.gridOptions.api.deselectAll();
                   this.setState({ selectedRows: [] });
                 }}
-                disabled={this.state.selectedRows.length == 0}
+                disabled={this.state.selectedRows.length === 0}
               >
                 Clear Selections
               </Button>

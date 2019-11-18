@@ -13,6 +13,8 @@ import FestivalEntry from "./components/FestivalEntry";
 import ConcertEntry from "./components/ConcertEntry";
 import ManualEntry from "./components/ManualEntry";
 import Grid from "@material-ui/core/Grid";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContentWrapper from "./components/MySnackbarContentWrapper";
 
 const theme = createMuiTheme({
   palette: {
@@ -22,6 +24,10 @@ const theme = createMuiTheme({
     secondary: {
       main: "#3a3a3a",
       light: "#eeeeee"
+    },
+    error: {
+      main: "#FF0000",
+      dark: "#FF0000"
     }
   },
   overrides: {
@@ -56,6 +62,42 @@ const theme = createMuiTheme({
 });
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      successOpen: false,
+      errorOpen: false,
+      snackbarMessage: "",
+      snackbarVariant: ""
+    };
+    this.openSnackbar = this.openSnackbar.bind(this);
+  }
+
+  handleClose(event, reason) {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ successOpen: false, errorOpen: false });
+  }
+
+  openSnackbar(type, message) {
+    if (type === "success") {
+      this.setState({
+        snackbarVariant: "success",
+        snackbarMessage: message,
+        successOpen: true
+      });
+    } else if (type === "error") {
+      console.log("error displayed");
+      this.setState({
+        snackbarVariant: "error",
+        snackbarMessage: message,
+        errorOpen: true
+      });
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -132,19 +174,49 @@ class App extends React.Component {
             </Grid>
             <Switch>
               <Route exact path="/">
-                <ConcertGrid />
+                <ConcertGrid openSnackbar={this.openSnackbar} />
               </Route>
               <Route path="/concert-entry">
-                <ConcertEntry />
+                <ConcertEntry openSnackbar={this.openSnackbar} />
               </Route>
               <Route path="/festival-entry">
-                <FestivalEntry />
+                <FestivalEntry openSnackbar={this.openSnackbar} />
               </Route>
               <Route path="/manual-entry">
                 <ManualEntry />
               </Route>
             </Switch>
           </Router>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            open={this.state.successOpen}
+            autoHideDuration={3000}
+            onClose={this.handleClose.bind(this)}
+          >
+            <SnackbarContentWrapper
+              onClose={this.handleClose.bind(this)}
+              variant={"success"}
+              message={this.state.snackbarMessage}
+            />
+          </Snackbar>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            open={this.state.errorOpen}
+            autoHideDuration={3000}
+            onClose={this.handleClose.bind(this)}
+          >
+            <SnackbarContentWrapper
+              onClose={this.handleClose.bind(this)}
+              variant={"error"}
+              message={this.state.snackbarMessage}
+            />
+          </Snackbar>
         </ThemeProvider>
       </div>
     );

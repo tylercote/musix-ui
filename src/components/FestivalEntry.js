@@ -4,7 +4,6 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
 import Autocomplete from "react-autocomplete";
 import { Autocomplete as MaterialAutocomplete } from "@material-ui/lab";
 import Rating from "react-rating";
@@ -13,6 +12,7 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import "./FestivalEntry.css";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -21,6 +21,7 @@ class FestivalEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      toGrid: false,
       festivals: [],
       festivalSelectionValue: "",
       festivalSelectionItem: "",
@@ -41,7 +42,7 @@ class FestivalEntry extends React.Component {
         this.setState({ festivals: response.data });
       })
       .catch(e => {
-        console.log(e);
+        this.props.openSnackbar("error", `Could not fetch festivals: ${e}.`);
       });
   }
 
@@ -54,7 +55,7 @@ class FestivalEntry extends React.Component {
         });
       })
       .catch(e => {
-        console.log(e);
+        this.props.openSnackbar("error", `Could not fetch artists: ${e}.`);
       });
   }
 
@@ -95,11 +96,12 @@ class FestivalEntry extends React.Component {
             if (review.stars !== 0 || review.comments !== "") {
               axios
                 .post(`http://localhost:8000/api/v1/reviews/`, review)
-                .then(response => {
-                  console.log("Successfully posted ", response.data);
-                })
+                .then(response => {})
                 .catch(e => {
-                  console.log(e);
+                  this.props.openSnackbar(
+                    "error",
+                    `Could not post reviews: ${e}.`
+                  );
                 });
             }
           })
@@ -110,8 +112,23 @@ class FestivalEntry extends React.Component {
     }
 
     Promise.all(postRequests)
-      .then(response => this.clearSelections())
-      .catch(e => console.log(e));
+      .then(response => {
+        this.clearSelections();
+        this.setState(() => ({ toGrid: true }));
+        setTimeout(
+          this.props.openSnackbar(
+            "success",
+            `Saved ${postRequests.length} concerts.`
+          ),
+          700
+        );
+      })
+      .catch(e => {
+        this.props.openSnackbar(
+          "error",
+          `Could not save ${postRequests.length} concerts: ${e}`
+        );
+      });
   }
 
   clearSelections() {
@@ -126,6 +143,10 @@ class FestivalEntry extends React.Component {
   }
 
   render() {
+    if (this.state.toGrid === true) {
+      return <Redirect exact to="/" />;
+    }
+
     return (
       <Grid
         container
