@@ -5,9 +5,14 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink
+  NavLink,
+  Redirect,
+  useHistory,
+  useLocation
 } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import PrivateRoute from "./components/PrivateRoute";
+import LoginView from "./components/LoginView";
 import ConcertGrid from "./components/ConcertGrid";
 import FestivalEntry from "./components/FestivalEntry";
 import ConcertEntry from "./components/ConcertEntry";
@@ -65,12 +70,74 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      displayed_form: "",
+      loggedIn: !!localStorage.getItem("token"),
+      username: "",
       successOpen: false,
       errorOpen: false,
       snackbarMessage: "",
       snackbarVariant: ""
     };
     this.openSnackbar = this.openSnackbar.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.loggedIn) {
+      fetch("http://localhost:8000/current_user/", {
+        headers: {
+          Authorization: `JWT ${localStorage.getItem("token")}`
+        }
+      })
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ username: json.username });
+        });
+    }
+  }
+
+  handleLogin(e, data) {
+    e.preventDefault();
+    fetch("http://localhost:8000/token-auth/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(json => {
+        localStorage.setItem("token", json.token);
+        this.setState({
+          loggedIn: true,
+          displayed_form: "",
+          username: json.user.username
+        });
+      });
+  }
+
+  handleSignup(e, data) {
+    e.preventDefault();
+    fetch("http://localhost:8000/users/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(json => {
+        localStorage.setItem("token", json.token);
+        this.setState({
+          loggedIn: true,
+          displayed_form: "",
+          username: json.username
+        });
+      });
+  }
+
+  handleLogout() {
+    localStorage.removeItem("token");
+    this.setState({ loggedIn: false, username: "" });
   }
 
   handleClose(event, reason) {
@@ -99,7 +166,9 @@ class App extends React.Component {
   }
 
   render() {
-    return (
+    // let history = useHistory();
+
+    return this.state.loggedIn ? (
       <div className="App">
         <ThemeProvider theme={theme}>
           <Router>
@@ -171,20 +240,31 @@ class App extends React.Component {
                   Manual Entry
                 </NavLink>
               </Grid>
+              <div className={"authButtons"}>
+                <NavLink to="/login" onClick={() => this.handleLogout()}>
+                  Logout
+                </NavLink>
+              </div>
             </Grid>
             <Switch>
-              <Route exact path="/">
+              <PrivateRoute exact path="/" loggedIn={this.state.loggedIn}>
                 <ConcertGrid openSnackbar={this.openSnackbar} />
-              </Route>
-              <Route path="/concert-entry">
+              </PrivateRoute>
+              <PrivateRoute
+                path="/concert-entry"
+                loggedIn={this.state.loggedIn}
+              >
                 <ConcertEntry openSnackbar={this.openSnackbar} />
-              </Route>
-              <Route path="/festival-entry">
-                <FestivalEntry openSnackbar={this.openSnackbar} />
-              </Route>
-              <Route path="/manual-entry">
+              </PrivateRoute>
+              <PrivateRoute
+                path="/festival-entry"
+                loggedIn={this.state.loggedIn}
+              >
+                <FestivalEntry openSnackbar={this.openSnackbar} />\{" "}
+              </PrivateRoute>
+              <PrivateRoute path="/manual-entry" loggedIn={this.state.loggedIn}>
                 <ManualEntry />
-              </Route>
+              </PrivateRoute>
             </Switch>
           </Router>
           <Snackbar
@@ -219,6 +299,8 @@ class App extends React.Component {
           </Snackbar>
         </ThemeProvider>
       </div>
+    ) : (
+      <LoginView handleLogin={this.handleLogin} />
     );
   }
 }
