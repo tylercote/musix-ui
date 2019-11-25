@@ -12,7 +12,7 @@ import {
 import LocationSearchInput from "./LocationSearchInput";
 import Rating from "react-rating";
 import "./ConcertEntry.css";
-import axios from "axios";
+import axiosClient from "../../utils/AxiosClient";
 import { Redirect } from "react-router-dom";
 
 class ConcertEntry extends React.Component {
@@ -62,14 +62,14 @@ class ConcertEntry extends React.Component {
       venueLocation: this.state.venueLocation
     };
 
-    axios
-      .post(`http://localhost:8000/api/v1/concerts/add_concert/`, newConcert)
-      .then(response => {
+    axiosClient
+      .post(`/api/v1/concerts/add_concert/`, newConcert)
+      .then((response) => {
         this.clearSelections();
         this.setState(() => ({ toGrid: true }));
         setTimeout(this.props.openSnackbar("success", "Concert added."), 700);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         this.props.openSnackbar("error", "Concert not added: " + e);
       });
@@ -112,10 +112,10 @@ class ConcertEntry extends React.Component {
               InputProps={{
                 className: "input"
               }}
-              label={"Artist..."}
+              label={"Artist"}
               margin="normal"
               value={this.state.artist}
-              onChange={e => this.handleInputChange(e, "artist")}
+              onChange={(e) => this.handleInputChange(e, "artist")}
             />
             <h2>at</h2>
             <LocationSearchInput handleSelect={this.handleVenueSelect} />
@@ -133,7 +133,7 @@ class ConcertEntry extends React.Component {
                 id="date-picker-inline"
                 label={"Date"}
                 value={this.state.date}
-                onChange={e => this.handleInputChange(e, "date")}
+                onChange={(e) => this.handleInputChange(e, "date")}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
                   color: "secondary"
@@ -151,11 +151,11 @@ class ConcertEntry extends React.Component {
             />
             <TextField
               id="outlined-multiline-static"
-              label="Comments..."
+              label="Comments"
               multiline
               rows="6"
               value={this.state.comments}
-              onChange={e => this.handleInputChange(e, "comments")}
+              onChange={(e) => this.handleInputChange(e, "comments")}
               className={"commentsSection inputWrapper"}
               InputProps={{
                 className: "input",

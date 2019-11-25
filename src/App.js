@@ -5,21 +5,17 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink,
-  Redirect,
-  useHistory,
-  useLocation
+  Redirect
 } from "react-router-dom";
+import axios from "axios";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import PrivateRoute from "./components/PrivateRoute";
-import LoginView from "./components/LoginView";
-import ConcertGrid from "./components/ConcertGrid";
-import FestivalEntry from "./components/FestivalEntry";
-import ConcertEntry from "./components/ConcertEntry";
-import ManualEntry from "./components/ManualEntry";
-import Grid from "@material-ui/core/Grid";
+import { PrivateRoute } from "./components/PrivateRoute";
+import LoginView from "./components/auth/LoginView";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContentWrapper from "./components/MySnackbarContentWrapper";
+import HomeView from "./components/home/HomeView";
+import jwt from "jsonwebtoken";
+import LinesBackground from "./components/auth/LinesBackground";
 
 const theme = createMuiTheme({
   palette: {
@@ -79,58 +75,81 @@ class App extends React.Component {
       snackbarVariant: ""
     };
     this.openSnackbar = this.openSnackbar.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   componentDidMount() {
+    let token = localStorage.getItem("token");
+
+    jwt.verify(
+      token,
+      "-1izvs+(!mx%vx8qh^_(d(d1la38x_hmg7(q5mq#fk%48)tpir",
+      function(err, decoded) {
+        if (err && err.name === "TokenExpiredError") {
+          this.handleLogout();
+        }
+      }.bind(this)
+    );
+
     if (this.state.loggedIn) {
       fetch("http://localhost:8000/current_user/", {
         headers: {
           Authorization: `JWT ${localStorage.getItem("token")}`
         }
       })
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
+          console.log("Change state 103");
           this.setState({ username: json.username });
         });
     }
   }
 
-  handleLogin(e, data) {
+  handleLogin(e, data, onFail) {
     e.preventDefault();
-    fetch("http://localhost:8000/token-auth/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.json())
-      .then(json => {
-        localStorage.setItem("token", json.token);
-        this.setState({
-          loggedIn: true,
-          displayed_form: "",
-          username: json.user.username
-        });
+    axios
+      .post("http://localhost:8000/token-auth/", data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("userId", res.data.user.id);
+          localStorage.setItem("username", res.data.user.username);
+          console.log("Change state 129");
+          this.setState({
+            loggedIn: true,
+            displayed_form: "",
+            username: res.data.user.username
+          });
+        }
+      })
+      .catch((res) => {
+        this.openSnackbar("error", "Incorrect login. Please try again.");
+        // onFail();
       });
   }
 
   handleSignup(e, data) {
     e.preventDefault();
-    fetch("http://localhost:8000/users/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.json())
-      .then(json => {
-        localStorage.setItem("token", json.token);
+    axios
+      .post("http://localhost:8000/users/", data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data.user.id);
+        localStorage.setItem("username", res.data.user.username);
         this.setState({
           loggedIn: true,
           displayed_form: "",
-          username: json.username
+          username: res.data.username
         });
       });
   }
@@ -156,7 +175,6 @@ class App extends React.Component {
         successOpen: true
       });
     } else if (type === "error") {
-      console.log("error displayed");
       this.setState({
         snackbarVariant: "error",
         snackbarMessage: message,
@@ -166,107 +184,43 @@ class App extends React.Component {
   }
 
   render() {
-    // let history = useHistory();
-
-    return this.state.loggedIn ? (
+    return (
       <div className="App">
         <ThemeProvider theme={theme}>
           <Router>
-            <Grid
-              className={"headerContainer"}
-              container
-              direction="row"
-              justify="space-around"
-              alignItems="center"
-            >
-              <Grid item xs={4}>
-                <NavLink exact to="/" className="navButton">
-                  <h1 className={"siteTitle"}>
-                    <i className="fas fa-headphones-alt headphones-logo"></i>
-                    Musix
-                  </h1>
-                </NavLink>
-              </Grid>
-              <Grid item xs>
-                <NavLink
-                  className="navButton"
-                  activeStyle={{
-                    fontWeight: "bold",
-                    borderBottom: "3px solid aqua",
-                    paddingBottom: "5px"
-                  }}
-                  exact
-                  to="/"
-                >
-                  View my Concerts
-                </NavLink>
-              </Grid>
-              <Grid item xs>
-                <NavLink
-                  className="navButton"
-                  activeStyle={{
-                    fontWeight: "bold",
-                    borderBottom: "3px solid aqua",
-                    paddingBottom: "5px"
-                  }}
-                  to="/concert-entry"
-                >
-                  Enter a Concert
-                </NavLink>
-              </Grid>
-              <Grid item xs>
-                <NavLink
-                  className="navButton"
-                  activeStyle={{
-                    fontWeight: "bold",
-                    borderBottom: "3px solid aqua",
-                    paddingBottom: "5px"
-                  }}
-                  to="/festival-entry"
-                >
-                  Enter a Festival
-                </NavLink>
-              </Grid>
-              <Grid item xs>
-                <NavLink
-                  className="navButton"
-                  activeStyle={{
-                    fontWeight: "bold",
-                    borderBottom: "3px solid aqua",
-                    paddingBottom: "5px"
-                  }}
-                  to="/manual-entry"
-                >
-                  Manual Entry
-                </NavLink>
-              </Grid>
-              <div className={"authButtons"}>
-                <NavLink to="/login" onClick={() => this.handleLogout()}>
-                  Logout
-                </NavLink>
-              </div>
-            </Grid>
+            {this.state.loggedIn ? (
+              <Redirect to={"/"} />
+            ) : (
+              <Redirect to={"/login"} />
+            )}
+            {!this.state.loggedIn ? <LinesBackground /> : null}
             <Switch>
-              <PrivateRoute exact path="/" loggedIn={this.state.loggedIn}>
-                <ConcertGrid openSnackbar={this.openSnackbar} />
-              </PrivateRoute>
               <PrivateRoute
-                path="/concert-entry"
                 loggedIn={this.state.loggedIn}
-              >
-                <ConcertEntry openSnackbar={this.openSnackbar} />
-              </PrivateRoute>
-              <PrivateRoute
-                path="/festival-entry"
-                loggedIn={this.state.loggedIn}
-              >
-                <FestivalEntry openSnackbar={this.openSnackbar} />\{" "}
-              </PrivateRoute>
-              <PrivateRoute path="/manual-entry" loggedIn={this.state.loggedIn}>
-                <ManualEntry />
-              </PrivateRoute>
+                path="/"
+                exact
+                component={() => (
+                  <HomeView
+                    handleLogout={this.handleLogout}
+                    openSnackbar={this.openSnackbar}
+                  />
+                )}
+              />
+              <Route
+                path="/login"
+                component={() => (
+                  <div style={{ height: "100%" }}>
+                    <LoginView
+                      handleLogin={this.handleLogin}
+                      handleSignup={this.handleSignup}
+                      openSnackbar={this.openSnackbar}
+                    />
+                  </div>
+                )}
+              />
             </Switch>
           </Router>
+          {/*<CustomizedSnackbar open={}/>*/}
           <Snackbar
             anchorOrigin={{
               vertical: "bottom",
@@ -299,8 +253,6 @@ class App extends React.Component {
           </Snackbar>
         </ThemeProvider>
       </div>
-    ) : (
-      <LoginView handleLogin={this.handleLogin} />
     );
   }
 }

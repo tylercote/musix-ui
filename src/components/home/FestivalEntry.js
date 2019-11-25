@@ -11,7 +11,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import "./FestivalEntry.css";
-import axios from "axios";
+import axiosClient from "../../utils/AxiosClient";
 import { Redirect } from "react-router-dom";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -36,25 +36,30 @@ class FestivalEntry extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(`http://localhost:8000/api/v1/festivals/`)
-      .then(response => {
-        this.setState({ festivals: response.data });
+    axiosClient
+      .get(`/api/v1/festivals/`)
+      .then((response) => {
+        this.setState({
+          festivals: response.data.sort((a, b) => a.name.localeCompare(b.name))
+        });
       })
-      .catch(e => {
-        this.props.openSnackbar("error", `Could not fetch festivals: ${e}.`);
+      .catch((e) => {
+        if (e.detail === "Signature has expired.") {
+        } else {
+          this.props.openSnackbar("error", `Could not fetch festivals: ${e}.`);
+        }
       });
   }
 
   fetchNewArtists(festivalId) {
-    axios
-      .get(`http://localhost:8000/api/v1/festivals/${festivalId}/get_artists/`)
-      .then(response => {
+    axiosClient
+      .get(`/api/v1/festivals/${festivalId}/get_artists/`)
+      .then((response) => {
         this.setState({
           artists: response.data.sort((a, b) => a.name.localeCompare(b.name))
         });
       })
-      .catch(e => {
+      .catch((e) => {
         this.props.openSnackbar("error", `Could not fetch artists: ${e}.`);
       });
   }
@@ -76,17 +81,19 @@ class FestivalEntry extends React.Component {
 
     for (let artist of this.state.artistSelections) {
       let concert = {};
+      concert.user = localStorage.getItem("userId");
       concert.artist = artist.id;
       concert.venue = this.state.festivalSelectionItem.venue;
       concert.festival = this.state.festivalSelectionItem.id;
       concert.date = this.state.festivalSelectionItem.startDate;
       let concertId = null;
       postRequests.push(
-        axios
-          .post(`http://localhost:8000/api/v1/concerts/`, concert)
-          .then(response => {
+        axiosClient
+          .post(`/api/v1/concerts/`, concert)
+          .then((response) => {
             concertId = response.data.id;
             let review = {};
+            review.user = localStorage.getItem("userId");
             review.concert = concertId;
             review.stars =
               this.state.artistReviews[artist.id].rating === 0
@@ -94,10 +101,10 @@ class FestivalEntry extends React.Component {
                 : this.state.artistReviews[artist.id].rating;
             review.comments = this.state.artistReviews[artist.id].comments;
             if (review.stars !== 0 || review.comments !== "") {
-              axios
-                .post(`http://localhost:8000/api/v1/reviews/`, review)
-                .then(response => {})
-                .catch(e => {
+              axiosClient
+                .post(`/api/v1/reviews/`, review)
+                .then((response) => {})
+                .catch((e) => {
                   this.props.openSnackbar(
                     "error",
                     `Could not post reviews: ${e}.`
@@ -105,14 +112,14 @@ class FestivalEntry extends React.Component {
                 });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
           })
       );
     }
 
     Promise.all(postRequests)
-      .then(response => {
+      .then((response) => {
         this.clearSelections();
         this.setState(() => ({ toGrid: true }));
         setTimeout(
@@ -123,7 +130,7 @@ class FestivalEntry extends React.Component {
           700
         );
       })
-      .catch(e => {
+      .catch((e) => {
         this.props.openSnackbar(
           "error",
           `Could not save ${postRequests.length} concerts: ${e}`
@@ -159,7 +166,7 @@ class FestivalEntry extends React.Component {
           <Paper className={"paperContainer"}>
             <h2>I went to</h2>
             <Autocomplete
-              getItemValue={item =>
+              getItemValue={(item) =>
                 item.name + " " + item.startDate.substr(0, 4)
               }
               items={this.state.festivals}
@@ -181,7 +188,7 @@ class FestivalEntry extends React.Component {
                 </div>
               )}
               value={this.state.festivalSelectionValue}
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ festivalSelectionValue: e.target.value });
               }}
               onSelect={(val, item) => {
@@ -191,10 +198,10 @@ class FestivalEntry extends React.Component {
                 });
                 this.fetchNewArtists(item.id);
               }}
-              renderInput={props => (
+              renderInput={(props) => (
                 <TextField
                   {...props}
-                  label={"Festival..."}
+                  label={"Festival"}
                   InputProps={{
                     className: "input"
                   }}
@@ -207,7 +214,7 @@ class FestivalEntry extends React.Component {
               id="checkboxes-tags-demo"
               options={this.state.artists}
               disableCloseOnSelect
-              getOptionLabel={option => option.name}
+              getOptionLabel={(option) => option.name}
               renderOption={(option, { selected }) => (
                 <React.Fragment>
                   <Checkbox
@@ -225,7 +232,7 @@ class FestivalEntry extends React.Component {
                 marginRight: "auto",
                 color: "#eeeeee !important"
               }}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
@@ -256,17 +263,17 @@ class FestivalEntry extends React.Component {
                     className={"ratingSpan"}
                     fractions={5}
                     initialRating={this.state.artistReviews[artist.id].rating}
-                    onClick={e => this.changeRating(e, artist.id)}
+                    onClick={(e) => this.changeRating(e, artist.id)}
                     fullSymbol={"fa fa-star rating rating-full"}
                     emptySymbol={"fa fa-star-o rating rating-empty"}
                   />
                   <TextField
                     id="outlined-multiline-static"
-                    label="Comments..."
+                    label="Comments"
                     multiline
                     rows="2"
                     value={this.state.artistReviews[artist.id].comments}
-                    onChange={e => this.handleCommentsChange(e, artist.id)}
+                    onChange={(e) => this.handleCommentsChange(e, artist.id)}
                     className={"commentsSection inputWrapper"}
                     InputProps={{
                       className: "input",

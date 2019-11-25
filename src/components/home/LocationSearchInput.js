@@ -13,7 +13,7 @@ class LocationSearchInput extends React.Component {
     console.log(address);
   };
 
-  handleChange = address => {
+  handleChange = (address) => {
     this.setState({ address });
   };
 
@@ -30,14 +30,14 @@ class LocationSearchInput extends React.Component {
               {...getInputProps({
                 className: "location-search-input"
               })}
-              label={"Venue..."}
+              label={"Venue"}
               InputProps={{
                 className: "input"
               }}
             />
             <div className="autocomplete-dropdown-container">
               {loading && <div>Loading...</div>}
-              {suggestions.map(suggestion => {
+              {suggestions.map((suggestion) => {
                 const className = suggestion.active
                   ? "suggestion-item--active"
                   : "suggestion-item";

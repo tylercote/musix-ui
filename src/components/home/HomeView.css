@@ -1,0 +1,57 @@
+.navWrapper {
+    height: 100%;
+}
+
+.siteTitleLink {
+    text-decoration: none;
+}
+
+.linkTextWrapper {
+    display: block;
+    padding-top: 55px;
+}
+
+.navButton {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: block;
+    color: aqua;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.navButton:hover {
+    background-color: #151515;
+}
+
+.authButtons {
+    z-index: 2;
+    background-color: #616161;
+    position: absolute;
+    padding: 5px 15px 5px 15px;
+    border-bottom-left-radius: 7px;
+    top: 0;
+    right: 0;
+    height: 25px;
+}
+
+.authButtons > i {
+    color: white;
+    margin-right: 5px;
+}
+
+.authButtons > span {
+    color: white;
+    margin-right: 30px;
+}
+
+.authButtons > a {
+    text-decoration: none;
+    color: white;
+    margin-right: 10px;
+}
+
+.authButtons > a:hover {
+    color: #DDDDDD;
+}

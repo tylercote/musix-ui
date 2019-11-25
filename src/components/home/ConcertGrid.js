@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { AgGridReact } from "ag-grid-react";
-import axios from "axios";
+import axiosClient from "../../utils/AxiosClient";
 import "./ConcertGrid.css";
 import { Paper } from "@material-ui/core";
 
@@ -113,17 +113,17 @@ class ConcertGrid extends React.Component {
 
   deleteSelectedConcerts() {
     let concertsToDelete = this.state.gridOptions.api.getSelectedRows();
-    concertsToDelete.forEach(concert => {
-      axios
-        .delete(`http://localhost:8000/api/v1/concerts/${concert.id}/`)
-        .then(response => {
+    concertsToDelete.forEach((concert) => {
+      axiosClient
+        .delete(`/api/v1/concerts/${concert.id}/`)
+        .then((response) => {
           this.fetchRows();
           this.props.openSnackbar(
             "success",
             `Deleted ${concertsToDelete.length} concerts.`
           );
         })
-        .catch(e => {
+        .catch((e) => {
           this.props.openSnackbar(
             "error",
             `Could not delete ${concertsToDelete.length} concerts.`
@@ -134,12 +134,12 @@ class ConcertGrid extends React.Component {
   }
 
   fetchRows() {
-    axios
-      .get(`http://localhost:8000/api/v1/concerts/get_concerts/`)
-      .then(response => {
+    axiosClient
+      .get(`/api/v1/concerts/get_concerts/`)
+      .then((response) => {
         this.setState({ rows: response.data });
       })
-      .catch(e => {
+      .catch((e) => {
         this.props.openSnackbar("error", `Could not fetch concerts: ${e}.`);
       });
   }
@@ -168,23 +168,22 @@ class ConcertGrid extends React.Component {
 
   updateArtist(event) {
     // Make new artist, update with FK of new artist
-    console.log("Updating artist");
     let artist = { name: event.data.artistName };
-    axios
-      .post(`http://localhost:8000/api/v1/artists/`, artist)
-      .then(response => {
-        axios
-          .patch(`http://localhost:8000/api/v1/concerts/${event.data.id}/`, {
+    axiosClient
+      .post(`/api/v1/artists/`, artist)
+      .then((response) => {
+        axiosClient
+          .patch(`/api/v1/concerts/${event.data.id}/`, {
             artist: response.data.id
           })
-          .then(response => {
+          .then((response) => {
             this.fetchRows();
           })
-          .catch(e => {
+          .catch((e) => {
             this.fetchRows();
           });
       })
-      .catch(e => {
+      .catch((e) => {
         this.fetchRows();
         this.props.openSnackbar("error", `Could not update artist.`);
       });
@@ -192,14 +191,14 @@ class ConcertGrid extends React.Component {
 
   updateConcert(event) {
     // Update concert
-    axios
-      .patch(`http://localhost:8000/api/v1/concerts/${event.data.id}/`, {
+    axiosClient
+      .patch(`/api/v1/concerts/${event.data.id}/`, {
         date: event.data.date
       })
-      .then(response => {
+      .then((response) => {
         this.fetchRows();
       })
-      .catch(e => {
+      .catch((e) => {
         this.props.openSnackbar("error", `Could not update concert: ${e}`);
         this.fetchRows();
       });
@@ -211,21 +210,21 @@ class ConcertGrid extends React.Component {
       name: event.data.venueName,
       location: event.data.venueLocation
     };
-    axios
-      .post(`http://localhost:8000/api/v1/venues/`, venue)
-      .then(response => {
-        axios
-          .patch(`http://localhost:8000/api/v1/concerts/${event.data.id}/`, {
+    axiosClient
+      .post(`/api/v1/venues/`, venue)
+      .then((response) => {
+        axiosClient
+          .patch(`/api/v1/concerts/${event.data.id}/`, {
             venue: response.data.id
           })
-          .then(response => {
+          .then((response) => {
             this.fetchRows();
           })
-          .catch(e => {
+          .catch((e) => {
             this.fetchRows();
           });
       })
-      .catch(e => {
+      .catch((e) => {
         this.fetchRows();
         this.props.openSnackbar("error", `Could not update venue.`);
       });
@@ -240,25 +239,22 @@ class ConcertGrid extends React.Component {
     };
     if (event.data.review_id) {
       console.log("Updating");
-      axios
-        .patch(
-          `http://localhost:8000/api/v1/reviews/${event.data.review_id}/`,
-          review
-        )
-        .then(response => {
+      axiosClient
+        .patch(`/api/v1/reviews/${event.data.review_id}/`, review)
+        .then((response) => {
           this.fetchRows();
         })
-        .catch(e => {
+        .catch((e) => {
           this.props.openSnackbar("error", `Could not update review.`);
           this.fetchRows();
         });
     } else {
-      axios
-        .post(`http://localhost:8000/api/v1/reviews/`, review)
-        .then(response => {
+      axiosClient
+        .post(`/api/v1/reviews/`, review)
+        .then((response) => {
           this.fetchRows();
         })
-        .catch(e => {
+        .catch((e) => {
           this.props.openSnackbar("error", `Could not update review.`);
           this.fetchRows();
         });
@@ -273,7 +269,7 @@ class ConcertGrid extends React.Component {
             <div
               className="ag-theme-dark"
               style={{
-                height: "525px",
+                height: "515px",
                 width: "100%"
               }}
             >
@@ -285,7 +281,7 @@ class ConcertGrid extends React.Component {
                 rowSelection={"multiple"}
                 rowDeselection={true}
                 onSelectionChanged={this.rowSelected.bind(this)}
-              ></AgGridReact>
+              />
               <Button
                 variant="contained"
                 className={"deleteButton"}

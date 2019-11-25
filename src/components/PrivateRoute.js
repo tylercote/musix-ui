@@ -1,31 +1,19 @@
-import { Redirect, Route } from "react-router";
 import React from "react";
+import { Route, Redirect } from "react-router-dom";
 
-class PrivateRoute extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    console.log("User is logged in: ", this.props.loggedIn);
-    return (
-      <Route
-        {...this.props}
-        render={({ location }) =>
-          this.props.loggedIn ? (
-            this.props.children
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
+export function PrivateRoute({ component: Component, loggedIn, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        loggedIn === true ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        )
+      }
+    />
+  );
 }
-
-export default PrivateRoute;
