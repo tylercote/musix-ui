@@ -11,7 +11,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from "@material-ui/pickers";
-import axios from "axios";
+import axiosClient from "../../utils/AxiosClient";
 import "./ManualCrud.css";
 
 class ManualCrud extends React.Component {
@@ -52,14 +52,14 @@ class ManualCrud extends React.Component {
 
   handleInputChange(event, field) {
     if (event instanceof Date) {
-      this.setState(prevState => {
+      this.setState((prevState) => {
         let oldCol = Object.assign({}, prevState.columnModel);
         oldCol[field] = event;
         return { columnModel: oldCol };
       });
     } else {
       event.persist();
-      this.setState(prevState => {
+      this.setState((prevState) => {
         let oldCol = Object.assign({}, prevState.columnModel);
         oldCol[field] = event.target.value;
         return { columnModel: oldCol };
@@ -92,27 +92,24 @@ class ManualCrud extends React.Component {
       }
     }
     console.log("Posting: ", rowToPost);
-    axios
-      .post(`http://localhost:8000/api/v1/${this.props.endpoint}/`, rowToPost)
-      .then(response => {
+    axiosClient
+      .post(`/api/v1/${this.props.endpoint}/`, rowToPost)
+      .then((response) => {
         this.props.fetchRows();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   }
 
   putRow(event) {
     let oldValue = event.oldValue;
-    axios
-      .put(
-        `http://localhost:8000/api/v1/${this.props.endpoint}/${event.data.id}/`,
-        event.data
-      )
-      .then(response => {
+    axiosClient
+      .put(`/api/v1/${this.props.endpoint}/${event.data.id}/`, event.data)
+      .then((response) => {
         this.props.fetchRows();
       })
-      .catch(e => {
+      .catch((e) => {
         event.node.setDataValue(event.colDef.field, oldValue);
         this.props.fetchRows();
       });
@@ -124,14 +121,12 @@ class ManualCrud extends React.Component {
   }
 
   deleteSelectedRow() {
-    axios
-      .delete(
-        `http://localhost:8000/api/v1/${this.props.endpoint}/${this.state.selectedRow.id}/`
-      )
-      .then(response => {
+    axiosClient
+      .delete(`/api/v1/${this.props.endpoint}/${this.state.selectedRow.id}/`)
+      .then((response) => {
         this.props.fetchRows();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   }
@@ -169,7 +164,7 @@ class ManualCrud extends React.Component {
                       id="date-picker-inline"
                       label={col.name}
                       value={this.state.columnModel[col.field]}
-                      onChange={e => this.handleInputChange(e, col.field)}
+                      onChange={(e) => this.handleInputChange(e, col.field)}
                       KeyboardButtonProps={{
                         "aria-label": "change date"
                       }}
@@ -188,7 +183,7 @@ class ManualCrud extends React.Component {
                         ? this.state.columnModel[col.field]
                         : ""
                     }
-                    onChange={e => this.handleInputChange(e, col.field)}
+                    onChange={(e) => this.handleInputChange(e, col.field)}
                     type={col.type === "text" ? "text" : "number"}
                   />
                 );
@@ -213,7 +208,7 @@ class ManualCrud extends React.Component {
             <div
               className="ag-theme-dark"
               style={{
-                height: "700px",
+                height: "300px",
                 width: "100%"
               }}
             >

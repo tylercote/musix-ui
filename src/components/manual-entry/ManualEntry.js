@@ -4,7 +4,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { Switch, Route, Link } from "react-router-dom";
 import ManualCrud from "./ManualCrud";
-import axios from "axios";
+import axiosClient from "../../utils/AxiosClient";
 
 class ManualEntry extends React.Component {
   constructor(props) {
@@ -33,16 +33,16 @@ class ManualEntry extends React.Component {
   }
 
   fetchRows(endpoint) {
-    axios
-      .get(`http://localhost:8000/api/v1/${endpoint}/`)
-      .then(response => {
-        this.setState(prevState => {
+    axiosClient
+      .get(`/api/v1/${endpoint}/`)
+      .then((response) => {
+        this.setState((prevState) => {
           let oldData = Object.assign({}, prevState.data);
           oldData[endpoint] = response.data;
           return { data: oldData };
         });
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         this.setState({ ...this.state });
       });
@@ -52,7 +52,7 @@ class ManualEntry extends React.Component {
     this.setState({ value });
   };
 
-  handleChangeIndex = index => {
+  handleChangeIndex = (index) => {
     this.setState({ value: index });
   };
 
