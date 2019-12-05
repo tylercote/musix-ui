@@ -66,7 +66,8 @@ class ConcertGrid extends React.Component {
           editable: true,
           suppressMenu: true,
           resizable: true,
-          enableCellChangeFlash: true
+          enableCellChangeFlash: true,
+          // valueSetter: this.putRow.bind(this)
         },
         columnTypes: {
           text: {
@@ -145,10 +146,6 @@ class ConcertGrid extends React.Component {
   }
 
   putRow(event) {
-    console.log("Posting new value");
-    let oldValue = event.oldValue;
-    let newValue = event.data.artistName;
-    console.log(oldValue, newValue);
     if (event.colDef.field === "artistName") {
       this.updateArtist(event);
     } else if (event.colDef.field === "date") {
@@ -162,13 +159,14 @@ class ConcertGrid extends React.Component {
       event.colDef.field === "stars" ||
       event.colDef.field === "comments"
     ) {
-      this.updateReview(event);
+      // this.updateObject(params);
     }
+    this.fetchRows();
   }
 
   updateArtist(event) {
     // Make new artist, update with FK of new artist
-    let artist = { name: event.data.artistName };
+    let artist = { name: event.newValue };
     axiosClient
       .post(`/api/v1/artists/`, artist)
       .then((response) => {
@@ -177,30 +175,24 @@ class ConcertGrid extends React.Component {
             artist: response.data.id
           })
           .then((response) => {
-            this.fetchRows();
           })
           .catch((e) => {
-            this.fetchRows();
           });
       })
       .catch((e) => {
-        this.fetchRows();
         this.props.openSnackbar("error", `Could not update artist.`);
       });
   }
 
   updateConcert(event) {
-    // Update concert
     axiosClient
       .patch(`/api/v1/concerts/${event.data.id}/`, {
         date: event.data.date
       })
       .then((response) => {
-        this.fetchRows();
       })
       .catch((e) => {
         this.props.openSnackbar("error", `Could not update concert: ${e}`);
-        this.fetchRows();
       });
   }
 
@@ -218,46 +210,39 @@ class ConcertGrid extends React.Component {
             venue: response.data.id
           })
           .then((response) => {
-            this.fetchRows();
           })
           .catch((e) => {
-            this.fetchRows();
           });
       })
       .catch((e) => {
-        this.fetchRows();
         this.props.openSnackbar("error", `Could not update venue.`);
       });
   }
 
   updateReview(event) {
-    // Update review
     let review = {
       concert: event.data.id,
       stars: event.data.stars,
       comments: event.data.comments
     };
-    if (event.data.review_id) {
-      console.log("Updating");
-      axiosClient
-        .patch(`/api/v1/reviews/${event.data.review_id}/`, review)
-        .then((response) => {
-          this.fetchRows();
-        })
-        .catch((e) => {
-          this.props.openSnackbar("error", `Could not update review.`);
-          this.fetchRows();
-        });
-    } else {
-      axiosClient
-        .post(`/api/v1/reviews/`, review)
-        .then((response) => {
-          this.fetchRows();
-        })
-        .catch((e) => {
-          this.props.openSnackbar("error", `Could not update review.`);
-          this.fetchRows();
-        });
+    if (review.stars >= 0 && review.stars <= 5) {
+      if (event.data.review_id) {
+          axiosClient
+              .patch(`/api/v1/reviews/${event.data.review_id}/`, review)
+              .then((response) => {
+              })
+              .catch((e) => {
+                this.props.openSnackbar("error", `Could not update review.`);
+              });
+      } else {
+        axiosClient
+            .post(`/api/v1/reviews/`, review)
+            .then((response) => {
+            })
+            .catch((e) => {
+              this.props.openSnackbar("error", `Could not update review.`);
+            });
+      }
     }
   }
 

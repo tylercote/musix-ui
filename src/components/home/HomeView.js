@@ -93,19 +93,6 @@ class HomeView extends React.Component {
               <span className={"linkTextWrapper"}>ENTER A FESTIVAL</span>
             </NavLink>
           </Grid>
-          <Grid item xs className={"navWrapper"}>
-            <NavLink
-              className="navButton"
-              activeStyle={{
-                fontWeight: "bold",
-                borderBottom: "3px solid aqua",
-                height: "96%"
-              }}
-              to="/manual-entry"
-            >
-              <span className={"linkTextWrapper"}>MANUAL ENTRY</span>
-            </NavLink>
-          </Grid>
           <div className={"authButtons"}>
             <i className="fas fa-user-alt" />
             <span>{localStorage.getItem("username")}</span>
@@ -123,9 +110,6 @@ class HomeView extends React.Component {
           </Route>
           <Route path="/festival-entry">
             <FestivalEntry openSnackbar={this.props.openSnackbar} />
-          </Route>
-          <Route path="/manual-entry">
-            <ManualEntry openSnackbar={this.props.openSnackbar} />
           </Route>
         </Switch>
       </Router>
