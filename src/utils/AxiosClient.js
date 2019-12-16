@@ -2,7 +2,8 @@ import axios from "axios";
 
 const axiosClient = () => {
   const defaultOptions = {
-    baseURL: "http://localhost:8000",
+    // baseURL: "http://localhost:8000",
+    baseURL: "https://mymusix-server.herokuapp.com/",
     method: "get",
     headers: {
       "Content-Type": "application/json"
