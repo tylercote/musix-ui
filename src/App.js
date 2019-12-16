@@ -7,7 +7,6 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import axios from "axios";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { PrivateRoute } from "./components/PrivateRoute";
 import LoginView from "./components/auth/LoginView";
@@ -127,7 +126,7 @@ class App extends React.Component {
 
   handleSignup(e, data) {
     e.preventDefault();
-    axios
+    axiosClient
       .post("/users/", data)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
