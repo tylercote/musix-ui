@@ -81,7 +81,7 @@ class FestivalEntry extends React.Component {
 
     for (let artist of this.state.artistSelections) {
       let concert = {};
-      // concert.user = localStorage.getItem("userId");
+      concert.user = localStorage.getItem("userId");
       concert.artist = artist.id;
       concert.venue = this.state.festivalSelectionItem.venue;
       concert.festival = this.state.festivalSelectionItem.id;
@@ -93,7 +93,7 @@ class FestivalEntry extends React.Component {
           .then((response) => {
             concertId = response.data.id;
             let review = {};
-            // review.user = localStorage.getItem("userId");
+            review.user = localStorage.getItem("userId");
             review.concert = concertId;
             review.stars =
               this.state.artistReviews[artist.id].rating === 0
@@ -139,7 +139,6 @@ class FestivalEntry extends React.Component {
   }
 
   clearSelections() {
-    console.log("Clearing selections");
     this.setState({
       festivalSelectionValue: "",
       festivalSelectionItem: "",

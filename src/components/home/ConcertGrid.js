@@ -5,6 +5,9 @@ import { AgGridReact } from "ag-grid-react";
 import axiosClient from "../../utils/AxiosClient";
 import "./ConcertGrid.css";
 import { Paper } from "@material-ui/core";
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-dark.css';
+
 
 class ConcertGrid extends React.Component {
   constructor(props) {
@@ -107,9 +110,6 @@ class ConcertGrid extends React.Component {
     this.fetchRows();
   }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    return true;
-  }
 
   rowSelected() {
     let selectedRows = this.state.gridOptions.api.getSelectedRows();

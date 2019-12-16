@@ -95,9 +95,8 @@ class App extends React.Component {
 
     if (this.state.loggedIn) {
       axiosClient.get("/current_user/")
-        .then((res) => res.json())
-        .then((json) => {
-          this.setState({ username: json.username });
+        .then((res) => {
+          this.setState({ username: res.username });
         }).catch(e => {
           console.log(e);
           if (e.detail === "Signature has expired.") {
@@ -146,6 +145,8 @@ class App extends React.Component {
 
   handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userId");
     this.setState({ loggedIn: false, username: "" });
   }
 

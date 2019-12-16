@@ -42,7 +42,6 @@ class ConcertEntry extends React.Component {
   }
 
   changeRating(newRating) {
-    console.log(newRating);
     this.setState({
       rating: newRating
     });
@@ -50,6 +49,7 @@ class ConcertEntry extends React.Component {
 
   postConcert() {
     let newConcert = {
+      user: localStorage.getItem("userId"),
       artist: this.state.artist,
       rating: this.state.rating === 0 ? null : this.state.rating,
       comments: this.state.comments === "" ? null : this.state.comments,
@@ -87,7 +87,6 @@ class ConcertEntry extends React.Component {
   }
 
   handleVenueSelect(venueName, venueLocation) {
-    console.log(venueName, venueLocation);
     this.setState({ venueName: venueName, venueLocation: venueLocation });
   }
 

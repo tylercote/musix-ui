@@ -20,7 +20,6 @@ class LoginView extends React.PureComponent {
   }
 
   render() {
-    console.log("Re-render");
     return (
       <div className={"paperWrapper"}>
         <Grid container direction="row" justify="center" alignItems="center">
