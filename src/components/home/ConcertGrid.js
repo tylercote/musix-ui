@@ -159,9 +159,8 @@ class ConcertGrid extends React.Component {
       event.colDef.field === "stars" ||
       event.colDef.field === "comments"
     ) {
-      // this.updateObject(params);
+      this.updateReview(event);
     }
-    this.fetchRows();
   }
 
   updateArtist(event) {
@@ -175,6 +174,7 @@ class ConcertGrid extends React.Component {
             artist: response.data.id
           })
           .then((response) => {
+            this.fetchRows();
           })
           .catch((e) => {
           });
@@ -190,6 +190,7 @@ class ConcertGrid extends React.Component {
         date: event.data.date
       })
       .then((response) => {
+        this.fetchRows();
       })
       .catch((e) => {
         this.props.openSnackbar("error", `Could not update concert: ${e}`);
@@ -210,6 +211,7 @@ class ConcertGrid extends React.Component {
             venue: response.data.id
           })
           .then((response) => {
+            this.fetchRows();
           })
           .catch((e) => {
           });
@@ -230,6 +232,7 @@ class ConcertGrid extends React.Component {
           axiosClient
               .patch(`/api/v1/reviews/${event.data.review_id}/`, review)
               .then((response) => {
+                this.fetchRows();
               })
               .catch((e) => {
                 this.props.openSnackbar("error", `Could not update review.`);
@@ -238,6 +241,7 @@ class ConcertGrid extends React.Component {
         axiosClient
             .post(`/api/v1/reviews/`, review)
             .then((response) => {
+              this.fetchRows();
             })
             .catch((e) => {
               this.props.openSnackbar("error", `Could not update review.`);
