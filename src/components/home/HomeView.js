@@ -5,16 +5,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink,
-  Redirect
+  NavLink
 } from "react-router-dom";
-import axios from "axios";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import PrivateRoute from "../PrivateRoute";
 import ConcertGrid from "./ConcertGrid";
 import FestivalEntry from "./FestivalEntry";
 import ConcertEntry from "./ConcertEntry";
-import ManualEntry from "../manual-entry/ManualEntry";
 import Grid from "@material-ui/core/Grid";
 import "./HomeView.css";
 

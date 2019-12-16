@@ -4,7 +4,6 @@ import "./LoginView.css";
 import { Paper } from "@material-ui/core";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import LinesBackground from "./LinesBackground";
 
 class LoginView extends React.PureComponent {
   constructor(props) {

@@ -98,7 +98,12 @@ class App extends React.Component {
         .then((res) => res.json())
         .then((json) => {
           this.setState({ username: json.username });
-        });
+        }).catch(e => {
+          console.log(e);
+          if (e.detail === "Signature has expired.") {
+            this.handleLogout();
+          }
+      });
     }
   }
 
@@ -114,7 +119,7 @@ class App extends React.Component {
           this.setState({
             loggedIn: true,
             displayed_form: "",
-            username: res.data.user.username
+            username: res.data.username
           });
         }
       })
@@ -130,8 +135,7 @@ class App extends React.Component {
       .post("/users/", data)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userId", res.data.user.id);
-        localStorage.setItem("username", res.data.user.username);
+        localStorage.setItem("username", res.data.username);
         this.setState({
           loggedIn: true,
           displayed_form: "",
@@ -185,12 +189,9 @@ class App extends React.Component {
                 loggedIn={this.state.loggedIn}
                 path="/"
                 exact
-                component={() => (
-                  <HomeView
-                    handleLogout={this.handleLogout}
-                    openSnackbar={this.openSnackbar}
-                  />
-                )}
+                handleLogout={this.handleLogout}
+                openSnackbar={this.openSnackbar}
+                component={HomeView}
               />
               <Route
                 path="/login"

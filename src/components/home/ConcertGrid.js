@@ -107,6 +107,10 @@ class ConcertGrid extends React.Component {
     this.fetchRows();
   }
 
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return true;
+  }
+
   rowSelected() {
     let selectedRows = this.state.gridOptions.api.getSelectedRows();
     this.setState({ selectedRows: selectedRows });

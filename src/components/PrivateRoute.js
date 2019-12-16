@@ -7,7 +7,7 @@ export function PrivateRoute({ component: Component, loggedIn, ...rest }) {
       {...rest}
       render={(props) =>
         loggedIn === true ? (
-          <Component {...props} />
+          <Component openSnackbar={rest.openSnackbar} handleLogout={rest.handleLogout} />
         ) : (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
