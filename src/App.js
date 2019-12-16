@@ -16,6 +16,7 @@ import SnackbarContentWrapper from "./components/MySnackbarContentWrapper";
 import HomeView from "./components/home/HomeView";
 import jwt from "jsonwebtoken";
 import LinesBackground from "./components/auth/LinesBackground";
+import axiosClient from "./utils/AxiosClient";
 
 const theme = createMuiTheme({
   palette: {
@@ -85,7 +86,7 @@ class App extends React.Component {
 
     jwt.verify(
       token,
-      "-1izvs+(!mx%vx8qh^_(d(d1la38x_hmg7(q5mq#fk%48)tpir",
+      process.env.SECRET_KEY,
       function(err, decoded) {
         if (err && err.name === "TokenExpiredError") {
           this.handleLogout();
@@ -94,14 +95,9 @@ class App extends React.Component {
     );
 
     if (this.state.loggedIn) {
-      fetch("http://localhost:8000/current_user/", {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem("token")}`
-        }
-      })
+      axiosClient.get("/current_user/")
         .then((res) => res.json())
         .then((json) => {
-          console.log("Change state 103");
           this.setState({ username: json.username });
         });
     }
@@ -109,18 +105,13 @@ class App extends React.Component {
 
   handleLogin(e, data, onFail) {
     e.preventDefault();
-    axios
-      .post("http://localhost:8000/token-auth/", data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
+    axiosClient
+      .post("/token-auth/", data)
       .then((res) => {
         if (res.status === 200) {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("userId", res.data.user.id);
           localStorage.setItem("username", res.data.user.username);
-          console.log("Change state 129");
           this.setState({
             loggedIn: true,
             displayed_form: "",
@@ -137,11 +128,7 @@ class App extends React.Component {
   handleSignup(e, data) {
     e.preventDefault();
     axios
-      .post("http://localhost:8000/users/", data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
+      .post("/users/", data)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("userId", res.data.user.id);
