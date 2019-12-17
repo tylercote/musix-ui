@@ -7,8 +7,8 @@ class SignupForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fName: "",
-      lName: "",
+      first_name: "",
+      last_name: "",
       username: "",
       email: "",
       password: ""
@@ -40,10 +40,10 @@ class SignupForm extends React.Component {
       this.setState({ password: event.target.value });
     } else if (field === "email") {
       this.setState({ email: event.target.value });
-    } else if (field === "fName") {
-      this.setState({ fName: event.target.value });
-    } else if (field === "lName") {
-      this.setState({ lName: event.target.value });
+    } else if (field === "first_name") {
+      this.setState({ first_name: event.target.value });
+    } else if (field === "last_name") {
+      this.setState({ last_name: event.target.value });
     }
   }
 
@@ -59,8 +59,8 @@ class SignupForm extends React.Component {
           variant={"outlined"}
           label={"First Name"}
           margin="normal"
-          value={this.state.fName}
-          onChange={(e) => this.handleInputChange(e, "fName")}
+          value={this.state.first_name}
+          onChange={(e) => this.handleInputChange(e, "first_name")}
         />
         <TextField
           className={"inputWrapper"}
@@ -71,8 +71,8 @@ class SignupForm extends React.Component {
           variant={"outlined"}
           label={"Last Name"}
           margin="normal"
-          value={this.state.lName}
-          onChange={(e) => this.handleInputChange(e, "lName")}
+          value={this.state.last_name}
+          onChange={(e) => this.handleInputChange(e, "last_name")}
         />
         <TextField
           className={"inputWrapper"}
