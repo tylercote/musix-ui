@@ -26,7 +26,7 @@ const axiosClient = () => {
     },
     function(error) {
       // const originalRequest = error.config;
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         // axios
         //   .post(
         //     "http://localhost:8000/token-auth/",
