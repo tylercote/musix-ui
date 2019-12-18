@@ -129,10 +129,19 @@ class ConcertGrid extends React.Component {
           );
         })
         .catch((e) => {
-          this.props.openSnackbar(
-            "error",
-            `Could not delete ${concertsToDelete.length} concerts.`
-          );
+          if (e.response && e.response.status === 401) {
+            this.props.handleLogout();
+            this.props.openSnackbar(
+                "error",
+                `Session ended due to inactivity. Please log in again.`
+            );
+          }
+          else {
+            this.props.openSnackbar(
+                "error",
+                `Could not delete ${concertsToDelete.length} concerts.`
+            );
+          }
         });
     });
     this.setState({ selectedRows: [] });
@@ -145,7 +154,16 @@ class ConcertGrid extends React.Component {
         this.setState({ rows: response.data });
       })
       .catch((e) => {
-        this.props.openSnackbar("error", `Could not fetch concerts: ${e}.`);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        }
+        else {
+          this.props.openSnackbar("error", `Could not fetch concerts: ${e}.`);
+        }
       });
   }
 
@@ -181,10 +199,25 @@ class ConcertGrid extends React.Component {
             this.fetchRows();
           })
           .catch((e) => {
+            if (e.response && e.response.status === 401) {
+              this.props.handleLogout();
+              this.props.openSnackbar(
+                  "error",
+                  `Session ended due to inactivity. Please log in again.`
+              );
+            }
           });
       })
       .catch((e) => {
-        this.props.openSnackbar("error", `Could not update artist.`);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        } else {
+          this.props.openSnackbar("error", `Could not update artist.`);
+        }
       });
   }
 
@@ -197,7 +230,16 @@ class ConcertGrid extends React.Component {
         this.fetchRows();
       })
       .catch((e) => {
-        this.props.openSnackbar("error", `Could not update concert: ${e}`);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        }
+        else {
+          this.props.openSnackbar("error", `Could not update concert: ${e}`);
+        }
       });
   }
 
@@ -218,10 +260,25 @@ class ConcertGrid extends React.Component {
             this.fetchRows();
           })
           .catch((e) => {
+            if (e.response && e.response.status === 401) {
+              this.props.handleLogout();
+              this.props.openSnackbar(
+                  "error",
+                  `Session ended due to inactivity. Please log in again.`
+              );
+            }
           });
       })
       .catch((e) => {
-        this.props.openSnackbar("error", `Could not update venue.`);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        } else {
+          this.props.openSnackbar("error", `Could not update venue.`);
+        }
       });
   }
 
@@ -239,7 +296,16 @@ class ConcertGrid extends React.Component {
                 this.fetchRows();
               })
               .catch((e) => {
-                this.props.openSnackbar("error", `Could not update review.`);
+                if (e.response && e.response.status === 401) {
+                  this.props.handleLogout();
+                  this.props.openSnackbar(
+                      "error",
+                      `Session ended due to inactivity. Please log in again.`
+                  );
+                }
+                else {
+                  this.props.openSnackbar("error", `Could not update review.`);
+                }
               });
       } else {
         axiosClient
@@ -248,7 +314,16 @@ class ConcertGrid extends React.Component {
               this.fetchRows();
             })
             .catch((e) => {
-              this.props.openSnackbar("error", `Could not update review.`);
+              if (e.response && e.response.status === 401) {
+                this.props.handleLogout();
+                this.props.openSnackbar(
+                    "error",
+                    `Session ended due to inactivity. Please log in again.`
+                );
+              }
+              else {
+                this.props.openSnackbar("error", `Could not update review.`);
+              }
             });
       }
     }

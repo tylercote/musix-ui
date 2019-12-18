@@ -70,8 +70,16 @@ class ConcertEntry extends React.Component {
         setTimeout(this.props.openSnackbar("success", "Concert added."), 700);
       })
       .catch((e) => {
-        console.log(e);
-        this.props.openSnackbar("error", "Concert not added: " + e);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        }
+        else {
+          this.props.openSnackbar("error", "Concert not added: " + e);
+        }
       });
   }
 
@@ -142,7 +150,7 @@ class ConcertEntry extends React.Component {
             <hr />
             <Rating
               className={"ratingWrapper"}
-              fractions={5}
+              fractions={100}
               initialRating={this.state.rating}
               onClick={this.changeRating.bind(this)}
               fullSymbol={"fa fa-star rating rating-full"}

@@ -44,7 +44,12 @@ class FestivalEntry extends React.Component {
         });
       })
       .catch((e) => {
-        if (e.detail === "Signature has expired.") {
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
         } else {
           this.props.openSnackbar("error", `Could not fetch festivals: ${e}.`);
         }
@@ -60,7 +65,16 @@ class FestivalEntry extends React.Component {
         });
       })
       .catch((e) => {
-        this.props.openSnackbar("error", `Could not fetch artists: ${e}.`);
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        }
+        else {
+          this.props.openSnackbar("error", `Could not fetch artists: ${e}.`);
+        }
       });
   }
 
@@ -105,15 +119,31 @@ class FestivalEntry extends React.Component {
                 .post(`/api/v1/reviews/`, review)
                 .then((response) => {})
                 .catch((e) => {
-                  this.props.openSnackbar(
-                    "error",
-                    `Could not post reviews: ${e}.`
-                  );
+                  if (e.response && e.response.status === 401) {
+                    this.props.handleLogout();
+                    this.props.openSnackbar(
+                        "error",
+                        `Session ended due to inactivity. Please log in again.`
+                    );
+                  }
+                  else {
+                    this.props.openSnackbar(
+                        "error",
+                        `Could not post reviews: ${e}.`
+                    );
+                  }
+
                 });
             }
           })
           .catch((e) => {
-            console.log(e);
+            if (e.response && e.response.status === 401) {
+              this.props.handleLogout();
+              this.props.openSnackbar(
+                  "error",
+                  `Session ended due to inactivity. Please log in again.`
+              );
+            }
           })
       );
     }
@@ -131,10 +161,19 @@ class FestivalEntry extends React.Component {
         );
       })
       .catch((e) => {
-        this.props.openSnackbar(
-          "error",
-          `Could not save ${postRequests.length} concerts: ${e}`
-        );
+        if (e.response && e.response.status === 401) {
+          this.props.handleLogout();
+          this.props.openSnackbar(
+              "error",
+              `Session ended due to inactivity. Please log in again.`
+          );
+        }
+        else {
+          this.props.openSnackbar(
+              "error",
+              `Could not save ${postRequests.length} concerts: ${e}`
+          );
+        }
       });
   }
 
@@ -260,7 +299,7 @@ class FestivalEntry extends React.Component {
                   <h3>{artist.name}</h3>
                   <Rating
                     className={"ratingSpan"}
-                    fractions={5}
+                    fractions={100}
                     initialRating={this.state.artistReviews[artist.id].rating}
                     onClick={(e) => this.changeRating(e, artist.id)}
                     fullSymbol={"fa fa-star rating rating-full"}
