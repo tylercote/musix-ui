@@ -5,7 +5,7 @@ import { Paper } from "@material-ui/core";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
-class LoginView extends React.PureComponent {
+class LoginView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

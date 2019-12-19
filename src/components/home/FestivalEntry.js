@@ -99,7 +99,7 @@ class FestivalEntry extends React.Component {
       concert.artist = artist.id;
       concert.venue = this.state.festivalSelectionItem.venue;
       concert.festival = this.state.festivalSelectionItem.id;
-      concert.date = this.state.festivalSelectionItem.startDate;
+      concert.date = this.state.festivalSelectionItem.startdate;
       let concertId = null;
       postRequests.push(
         axiosClient
@@ -205,7 +205,7 @@ class FestivalEntry extends React.Component {
             <h2>I went to</h2>
             <Autocomplete
               getItemValue={(item) =>
-                item.name + " " + item.startDate.substr(0, 4)
+                item.name + " " + item.startdate.substr(0, 4)
               }
               items={this.state.festivals}
               menuStyle={{
@@ -222,7 +222,7 @@ class FestivalEntry extends React.Component {
                     color: isHighlighted ? "aqua" : "#eeeeee"
                   }}
                 >
-                  {item.name + " " + item.startDate.substr(0, 4)}
+                  {item.name + " " + item.startdate.substr(0, 4)}
                 </div>
               )}
               value={this.state.festivalSelectionValue}

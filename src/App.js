@@ -196,15 +196,11 @@ class App extends React.Component {
               />
               <Route
                 path="/login"
-                component={() => (
-                  <div style={{ height: "100%" }}>
-                    <LoginView
-                      handleLogin={this.handleLogin}
-                      handleSignup={this.handleSignup}
-                      openSnackbar={this.openSnackbar}
-                    />
-                  </div>
-                )}
+                render={(props) => <LoginView handleLogin={this.handleLogin}
+                                              handleLogout={this.handleLogout}
+                                              handleSignup={this.handleSignup}
+                                              openSnackbar={this.openSnackbar}
+                    />}
               />
             </Switch>
           </Router>

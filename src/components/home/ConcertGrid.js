@@ -18,7 +18,7 @@ class ConcertGrid extends React.Component {
       columnDefs: [
         {
           headerName: "Artist",
-          field: "artistName",
+          field: "artistname",
           suppressMenu: true,
           type: "text"
         },
@@ -31,19 +31,19 @@ class ConcertGrid extends React.Component {
         },
         {
           headerName: "Venue",
-          field: "venueName",
+          field: "venuename",
           suppressMenu: true,
           type: "text"
         },
         {
           headerName: "Location",
-          field: "venueLocation",
+          field: "venuelocation",
           suppressMenu: true,
           type: "text"
         },
         {
           headerName: "Festival",
-          field: "festivalName",
+          field: "festivalname",
           suppressMenu: true,
           type: "text",
           editable: false
@@ -168,13 +168,13 @@ class ConcertGrid extends React.Component {
   }
 
   putRow(event) {
-    if (event.colDef.field === "artistName") {
+    if (event.colDef.field === "artistname") {
       this.updateArtist(event);
     } else if (event.colDef.field === "date") {
       this.updateConcert(event);
     } else if (
-      event.colDef.field === "venueName" ||
-      event.colDef.field === "venueLocation"
+      event.colDef.field === "venuename" ||
+      event.colDef.field === "venuelocation"
     ) {
       this.updateVenue(event);
     } else if (
