@@ -1,3 +1,56 @@
+@media only screen and (max-width: 599px) {
+    .username {
+        display: block;
+        margin-right: 8px !important;
+        margin-bottom: 5px;
+    }
+    .siteTitle {
+        margin-top: unset;
+    }
+    .headerContainer {
+        height: 144px;
+    }
+    .navButton {
+        height: 62px !important;
+    }
+    .authButtons {
+        background-color: transparent !important;
+        padding-top: 7px !important;
+        padding-bottom: 3px !important;
+        top: -5px !important;
+        right: -10px !important;
+        height: 50px !important;
+    }
+    .authButtons > span {
+    }
+    .authButtons > a {
+        float: right;
+    }
+    .linkTextWrapper {
+        padding-top: 5px !important;
+    }
+    .clearButton {
+        left: 7vw;
+        bottom: 30px;
+    }
+    .deleteButton {
+        right: 7vw;
+        bottom: 30px;
+    }
+    .paperContainer {}
+}
+
+@media only screen and (max-width: 954px) {
+    .headphones-logo {
+        display: none
+    }
+}
+
+.fa-user-alt {
+    margin-right: 5px;
+}
+
+
 .navWrapper {
     height: 100%;
 }
@@ -54,4 +107,9 @@
 
 .authButtons > a:hover {
     color: #DDDDDD;
+}
+
+/*Festival entry autocomplete*/
+.MuiAutocomplete-root > .MuiTextField-root {
+    width: 80% !important;
 }

@@ -27,7 +27,8 @@ class ConcertGrid extends React.Component {
           field: "date",
           suppressMenu: true,
           type: "date",
-          sort: "desc"
+          sort: "desc",
+          width: 160
         },
         {
           headerName: "Venue",
@@ -46,19 +47,21 @@ class ConcertGrid extends React.Component {
           field: "festivalname",
           suppressMenu: true,
           type: "text",
-          editable: false
+          editable: false,
         },
         {
           headerName: "Rating",
           field: "stars",
           suppressMenu: true,
-          type: "float"
+          type: "float",
+          width: 80
         },
         {
           headerName: "Comments",
           field: "comments",
           suppressMenu: true,
-          type: "text"
+          type: "text",
+          width: 340
         }
       ],
       gridOptions: {

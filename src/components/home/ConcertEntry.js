@@ -111,7 +111,7 @@ class ConcertEntry extends React.Component {
         justify="center"
         alignItems="center"
       >
-        <Grid item className={"formContainer"} xs={6}>
+        <Grid item className={"formContainer"} xs={10} sm={6}>
           <Paper className={"paperContainer"}>
             <h2>I went to see</h2>
             <TextField

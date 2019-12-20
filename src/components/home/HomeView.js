@@ -5,7 +5,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink, Redirect
+  NavLink
 } from "react-router-dom";
 import ConcertGrid from "./ConcertGrid";
 import FestivalEntry from "./FestivalEntry";
@@ -40,7 +40,7 @@ class HomeView extends React.Component {
                 justify="space-around"
                 alignItems="center"
             >
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <NavLink exact to="/" className="siteTitleLink">
                   <h1 className={"siteTitle"}>
                     <i className="fas fa-headphones-alt headphones-logo"></i>
@@ -89,8 +89,9 @@ class HomeView extends React.Component {
                 </NavLink>
               </Grid>
               <div className={"authButtons"}>
+                  <span className={"username"}>
                 <i className="fas fa-user-alt" />
-                <span>{localStorage.getItem("username")}</span>
+                {localStorage.getItem("username")}</span>
                 <NavLink to="/login" onClick={() => this.props.handleLogout()}>
                   Logout
                 </NavLink>

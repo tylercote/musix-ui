@@ -200,7 +200,7 @@ class FestivalEntry extends React.Component {
         justify="center"
         alignItems="center"
       >
-        <Grid item className={"formContainer"} xs={8}>
+        <Grid item className={"formContainer"} xs={10} md={7}>
           <Paper className={"paperContainer"}>
             <h2>I went to</h2>
             <Autocomplete
@@ -265,7 +265,6 @@ class FestivalEntry extends React.Component {
                 </React.Fragment>
               )}
               style={{
-                width: 500,
                 marginLeft: "auto",
                 marginRight: "auto",
                 color: "#eeeeee !important"
@@ -275,7 +274,7 @@ class FestivalEntry extends React.Component {
                   {...params}
                   variant="outlined"
                   label="Artists"
-                  fullWidth
+                  // fullWidth
                   style={{
                     color: "#eeeeee"
                   }}

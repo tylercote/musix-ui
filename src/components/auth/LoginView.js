@@ -23,9 +23,9 @@ class LoginView extends React.Component {
     return (
       <div className={"paperWrapper"}>
         <Grid container direction="row" justify="center" alignItems="center">
-          <Grid item xs={5} style={{ zIndex: 1 }}>
+          <Grid item xs={10} sm={5} style={{ zIndex: 1 }}>
             <Paper className={"paperLogin"}>
-              <h1 className={"siteTitle"} style={{ marginBottom: "30px" }}>
+              <h1 className={"siteTitle"} style={{ marginBottom: "1vh" }}>
                 <i className="fas fa-headphones-alt headphones-logo"></i>
                 Musix
               </h1>
